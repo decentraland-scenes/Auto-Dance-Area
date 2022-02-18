@@ -5,6 +5,8 @@
 Make players dance in a loop when they stand in certain areas of your scene.
 When players stand on either of the two checkered platforms, they'll start looping a dance animation.
 
+![](screenshot/screenshot.gif)
+
 ## Instructions
 
 Open the `danceArea.ts` file. The first thing you'll find is the definition of `danceAreas`, an array with every danceArea definition in the scene. You can customize this to add more areas to this list, or change the size or position of these.
