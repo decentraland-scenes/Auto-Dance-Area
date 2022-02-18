@@ -5,7 +5,7 @@
 Make players dance in a loop when they stand in certain areas of your scene.
 When players stand on either of the two checkered platforms, they'll start looping a dance animation.
 
-![](screenshot/screenshot.gif)
+![](images/screenshot.gif)
 
 ## Instructions
 
