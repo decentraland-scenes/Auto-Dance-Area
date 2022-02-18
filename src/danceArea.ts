@@ -2,29 +2,38 @@ import * as utils from '@dcl/ecs-scene-utils'
 import { isPreviewMode } from '@decentraland/EnvironmentAPI'
 import { triggerEmote, PredefinedEmote } from '@decentraland/RestrictedActions'
 
+//// List of dance areas - add here the locations where you want dancing to happen
+
 export let danceAreas: any = [
   {
     transform: {
       position: new Vector3(4, 0, 4),
-      rotation: Quaternion.Euler(90, 0, 0),
-      scale: new Vector3(1, 3, 1),
+      scale: new Vector3(4, 4, 4),
     },
     type: PredefinedEmote.ROBOT,
   },
   {
     transform: {
       position: new Vector3(10, 0, 10),
-      rotation: Quaternion.Euler(90, 0, 0),
-      scale: new Vector3(1, 3, 1),
+      scale: new Vector3(4, 4, 4),
     },
     type: PredefinedEmote.DISCO,
   },
 ]
 
+////// DEBUG FLAG - Set to true to view all dance areas
+const DEBUG_FLAG = false
+
+///// This system acts on the danceAreas defined above
+
 export class DanceSystem {
   length = 11
   timer = 2
   routine: any
+  danceFunction: () => void = () => {
+    //   log('pointer Up')
+    this.dance()
+  }
 
   routines: PredefinedEmote[] = [
     PredefinedEmote.ROBOT,
@@ -45,14 +54,71 @@ export class DanceSystem {
     if (this.timer > 0) {
       this.timer -= dt
     } else {
-      this.timer = this.length
-      if (this.routine == 'all') {
-        let rand = Math.floor(Math.random() * (this.routine.length - 0) + 0)
-        triggerEmote({ predefined: this.routines[rand] })
-      } else {
-        triggerEmote({ predefined: this.routine })
-      }
+      this.dance()
     }
+  }
+  dance() {
+    this.timer = this.length
+    if (this.routine == 'all') {
+      let rand = Math.floor(Math.random() * (this.routine.length - 0) + 0)
+      triggerEmote({ predefined: this.routines[rand] })
+    } else {
+      triggerEmote({ predefined: this.routine })
+    }
+  }
+  addEvents() {
+    Input.instance.subscribe(
+      'BUTTON_UP',
+      ActionButton.FORWARD,
+      false,
+      this.danceFunction
+    )
+
+    Input.instance.subscribe(
+      'BUTTON_UP',
+      ActionButton.BACKWARD,
+      false,
+      this.danceFunction
+    )
+
+    Input.instance.subscribe(
+      'BUTTON_UP',
+      ActionButton.RIGHT,
+      false,
+      this.danceFunction
+    )
+
+    Input.instance.subscribe(
+      'BUTTON_UP',
+      ActionButton.LEFT,
+      false,
+      this.danceFunction
+    )
+  }
+  removeEvents() {
+    Input.instance.unsubscribe(
+      'BUTTON_UP',
+      ActionButton.FORWARD,
+      this.danceFunction
+    )
+
+    Input.instance.unsubscribe(
+      'BUTTON_UP',
+      ActionButton.BACKWARD,
+      this.danceFunction
+    )
+
+    Input.instance.unsubscribe(
+      'BUTTON_UP',
+      ActionButton.RIGHT,
+      this.danceFunction
+    )
+
+    Input.instance.unsubscribe(
+      'BUTTON_UP',
+      ActionButton.LEFT,
+      this.danceFunction
+    )
   }
 }
 
@@ -61,8 +127,9 @@ for (let i in danceAreas) {
   area.addComponent(new Transform(danceAreas[i].transform))
 
   executeTask(async () => {
-    if (await isPreviewMode()) {
-      area.addComponent(new PlaneShape())
+    if (DEBUG_FLAG && (await isPreviewMode())) {
+      area.addComponent(new BoxShape())
+      area.getComponent(BoxShape).withCollisions = false
     }
   })
 
@@ -83,8 +150,10 @@ for (let i in danceAreas) {
         enableDebug: false,
         onCameraEnter: () => {
           engine.addSystem(dsystem)
+          dsystem.addEvents()
         },
         onCameraExit: () => {
+          dsystem.removeEvents()
           engine.removeSystem(dsystem)
         },
       }
