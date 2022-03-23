@@ -21,9 +21,9 @@ You can also change the `type` of the dance, the following options are available
 - `PredefinedEmote.HANDS_AIR`
 - `PredefinedEmote.DISCO`
 - `PredefinedEmote.DAB`
-- `all`
+- `"all"`
 
-> Note: `all` performs random dance animations.
+> Note: When passing the string value `"all"`, the auto-dance area will perform random dance animations.
 
 Set the `DEBUG_FLAG` to true to view white cubes where each dance area is at. These are only visible if the scene is in preview mode, not once the scene is deployed.
 
