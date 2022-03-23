@@ -4,21 +4,21 @@ import { triggerEmote, PredefinedEmote } from '@decentraland/RestrictedActions'
 
 //// List of dance areas - add here the locations where you want dancing to happen
 
-export let danceAreas: any = [
+export const danceAreas: any = [
   {
     transform: {
       position: new Vector3(4, 0, 4),
-      scale: new Vector3(4, 4, 4),
+      scale: new Vector3(4, 4, 4)
     },
-    type: PredefinedEmote.ROBOT,
+    type: PredefinedEmote.ROBOT
   },
   {
     transform: {
       position: new Vector3(10, 0, 10),
-      scale: new Vector3(4, 4, 4),
+      scale: new Vector3(4, 4, 4)
     },
-    type: PredefinedEmote.DISCO,
-  },
+    type: PredefinedEmote.DISCO
+  }
 ]
 
 ////// DEBUG FLAG - Set to true to view all dance areas
@@ -43,7 +43,7 @@ export class DanceSystem {
     PredefinedEmote.HEAD_EXPLODDE,
     PredefinedEmote.HANDS_AIR,
     PredefinedEmote.DISCO,
-    PredefinedEmote.DAB,
+    PredefinedEmote.DAB
   ]
 
   constructor(routine: PredefinedEmote) {
@@ -59,11 +59,11 @@ export class DanceSystem {
   }
   dance() {
     this.timer = this.length
-    if (this.routine == 'all') {
-      let rand = Math.floor(Math.random() * (this.routine.length - 0) + 0)
-      triggerEmote({ predefined: this.routines[rand] })
+    if (this.routine === 'all') {
+      const rand = Math.floor(Math.random() * (this.routine.length - 0) + 0)
+      void triggerEmote({ predefined: this.routines[rand] })
     } else {
-      triggerEmote({ predefined: this.routine })
+      void triggerEmote({ predefined: this.routine })
     }
   }
   addEvents() {
@@ -122,11 +122,11 @@ export class DanceSystem {
   }
 }
 
-for (let i in danceAreas) {
-  let area = new Entity('dance-' + i)
+for (const i in danceAreas) {
+  const area = new Entity('dance-' + i)
   area.addComponent(new Transform(danceAreas[i].transform))
 
-  executeTask(async () => {
+  void executeTask(async () => {
     if (DEBUG_FLAG && (await isPreviewMode())) {
       area.addComponent(new BoxShape())
       area.getComponent(BoxShape).withCollisions = false
@@ -134,7 +134,7 @@ for (let i in danceAreas) {
   })
 
   engine.addEntity(area)
-  let dsystem = new DanceSystem(danceAreas[i].type)
+  const dsystem = new DanceSystem(danceAreas[i].type)
 
   area.addComponent(
     new utils.TriggerComponent(
@@ -155,7 +155,7 @@ for (let i in danceAreas) {
         onCameraExit: () => {
           dsystem.removeEvents()
           engine.removeSystem(dsystem)
-        },
+        }
       }
     )
   )
