@@ -60,7 +60,7 @@ export class DanceSystem {
   dance() {
     this.timer = this.length
     if (this.routine === 'all') {
-      const rand = Math.floor(Math.random() * (this.routine.length - 0) + 0)
+      const rand = Math.floor(Math.random() * (this.routines.length - 0) + 0)
       void triggerEmote({ predefined: this.routines[rand] })
     } else {
       void triggerEmote({ predefined: this.routine })
